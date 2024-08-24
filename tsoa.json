@@ -1,0 +1,44 @@
+{
+    "entryFile": "src/index.ts",
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "routes": {
+        "routesDir": "swagger",
+        "controllerPathGlobs": ["src/routes/**/*.ts"]
+    },
+    "spec": {
+        "outputDirectory": "swagger",
+        "specVersion": 3,
+        "securityDefinitions": {
+            "X-API-TOKEN": {
+                "type": "apiKey",
+                "name": "X-API-TOKEN",
+                "in": "header"
+            }
+        },
+        "spec": {
+            "info": {
+                "title": "Docs API Tong Nyampah",
+                "version": "v1.0.0",
+                "termsOfService": "https://sendistudio.id/tos",
+                "contact": {
+                    "name": "Sendi Aagustian",
+                    "email": "sendiagustian.pk@gmail.com"
+                },
+                "license": {
+                    "name": "MIT",
+                    "url": "https://opensource.org/licenses/MIT"
+                }
+            },
+            "servers": [
+                {
+                    "url": "http://127.0.0.1:8000",
+                    "description": "Local environment"
+                },
+                {
+                    "url": "https://example.com",
+                    "description": "Prod environment"
+                }
+            ]
+        }
+    }
+}

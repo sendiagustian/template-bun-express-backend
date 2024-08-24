@@ -1,0 +1,65 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {},
+		"securitySchemes": {
+			"X-API-TOKEN": {
+				"type": "apiKey",
+				"name": "X-API-TOKEN",
+				"in": "header"
+			}
+		}
+	},
+	"info": {
+		"title": "Docs API Tong Nyampah",
+		"version": "v1.0.0",
+		"termsOfService": "https://sendistudio.id/tos",
+		"contact": {
+			"name": "Sendi Aagustian",
+			"email": "sendiagustian.pk@gmail.com"
+		},
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"paths": {
+		"/health-check": {
+			"get": {
+				"operationId": "GetMessage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Health Check"
+				],
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "http://127.0.0.1:8000",
+			"description": "Local environment"
+		},
+		{
+			"url": "https://example.com",
+			"description": "Prod environment"
+		}
+	]
+}
