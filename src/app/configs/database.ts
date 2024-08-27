@@ -1,5 +1,4 @@
 import { Connection, createPool, ResultSetHeader } from "mysql2/promise";
-import { logger } from "../utils/logging";
 
 async function connectToDatabase(): Promise<Connection> {
     try {
@@ -19,15 +18,15 @@ async function connectToDatabase(): Promise<Connection> {
 }
 
 // FOR SELECT QUERY DATABASE
-export async function getQuery(query: string, type: "list" | "object", params?: any[]): Promise<any> {
+export async function getQuery(arg: { query: string; type: "list" | "object"; params?: any[] }): Promise<any> {
     let connection;
-    const valueParams = params?.filter((item) => item !== undefined);
+    const valueParams = arg.params?.filter((item) => item !== undefined);
 
     try {
         connection = await connectToDatabase();
-        const [rows, _field] = await connection.query(query, valueParams);
+        const [rows, _field] = await connection.query(arg.query, valueParams);
         const response = rows as any;
-        if (type === "list") {
+        if (arg.type === "list") {
             return response;
         } else {
             return response[0];
@@ -43,13 +42,13 @@ export async function getQuery(query: string, type: "list" | "object", params?: 
 }
 
 // FOR INSERT, UPDATE, DELETE QUERY DATABASE
-export async function exeQuery(query: string, params?: any[]): Promise<ResultSetHeader> {
+export async function exeQuery(arg: { query: string; params?: any[] }): Promise<ResultSetHeader> {
     let connection;
-    const valueParams = params?.filter((item) => item !== undefined);
+    const valueParams = arg.params?.filter((item) => item !== undefined);
 
     try {
         connection = await connectToDatabase();
-        const [rows, _field] = await connection.query(query, valueParams);
+        const [rows, _field] = await connection.query(arg.query, valueParams);
         return rows as ResultSetHeader;
     } catch (error) {
         console.error("Gagal menjalankan query:", error);

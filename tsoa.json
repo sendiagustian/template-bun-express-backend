@@ -1,9 +1,10 @@
 {
     "entryFile": "src/index.ts",
     "noImplicitAdditionalProperties": "throw-on-extras",
+    "controllerPathGlobs": ["src/routes/**/*.ts"],
     "routes": {
         "routesDir": "swagger",
-        "controllerPathGlobs": ["src/routes/**/*.ts"]
+        "specVersion": 3
     },
     "spec": {
         "outputDirectory": "swagger",

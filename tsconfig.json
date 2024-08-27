@@ -5,13 +5,12 @@
   ],
   "exclude": [
     "node_modules",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "swagger/**/*.ts"
   ],
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
+    "target": "ES6",
     "baseUrl": "src/",
-    "outDir": "./dist",
     "module": "commonjs",
     "moduleResolution": "Node",
     "strict": true,

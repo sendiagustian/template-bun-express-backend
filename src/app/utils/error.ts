@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { ErrorResponse } from "./response/error_response";
+import type { Request, Response, NextFunction } from "express";
+import type { ErrorResponse } from "../middlewares/response/error_response";
 
 export class ThrowError extends Error {
     constructor(
@@ -12,17 +12,19 @@ export class ThrowError extends Error {
     }
 }
 
-export const errorMiddleware = (error: Error, req: Request, res: Response, __: NextFunction): void => {
+export const errorHandle = (error: any, res: Response) => {
     if (error instanceof ZodError) {
-        const message: string = error.issues
-            .map((issue) => {
-                return `${issue.message} in field ${issue.path.join(".")}`;
-            })
+        const message: string = error.errors
+            .map((issue) => `${issue.message} in field ${issue.path.join(".")}`)
             .join(" & ");
 
         const response: ErrorResponse = {
             status: 400,
-            errors: message
+            errors: message,
+            details: error.errors.map((issue) => ({
+                field: issue.path.join("."),
+                message: issue.message
+            }))
         };
 
         res.status(400).json(response);

@@ -1,5 +1,6 @@
 {
-    "watch": ["src"],
     "ext": "ts",
-    "exec": "ts-node src/index.ts"
+    "watch": ["src"],
+    "ignore": ["*.test.ts", "node_modules/"],
+    "exec": "bun --bun src/index.ts"
 }
