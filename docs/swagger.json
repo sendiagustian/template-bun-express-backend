@@ -1,0 +1,165 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"DataResponse_string_": {
+				"properties": {
+					"data": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"data",
+					"status"
+				],
+				"type": "object"
+			},
+			"ErrorResponse": {
+				"properties": {
+					"details": {},
+					"errors": {
+						"type": "string"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"errors",
+					"status"
+				],
+				"type": "object"
+			},
+			"CreateUserRequest": {
+				"properties": {
+					"phone": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"phone",
+					"password",
+					"email",
+					"name"
+				],
+				"type": "object"
+			}
+		},
+		"securitySchemes": {
+			"X-API-TOKEN": {
+				"type": "apiKey",
+				"name": "X-API-TOKEN",
+				"in": "header"
+			}
+		}
+	},
+	"info": {
+		"title": "Docs API Tong Nyampah",
+		"version": "v1.0.0",
+		"termsOfService": "https://sendistudio.id/tos",
+		"contact": {
+			"name": "Sendi Aagustian",
+			"email": "sendiagustian.pk@gmail.com"
+		},
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"paths": {
+		"/health-check": {
+			"get": {
+				"operationId": "GetMessage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Health Check"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/v1/user/register": {
+			"post": {
+				"operationId": "registerUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/DataResponse_string_"
+										},
+										{
+											"$ref": "#/components/schemas/ErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"X-API-TOKEN": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserRequest"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "http://127.0.0.1:5050",
+			"description": "Local environment"
+		},
+		{
+			"url": "http://127.0.0.1:8000",
+			"description": "Prod environment"
+		}
+	]
+}

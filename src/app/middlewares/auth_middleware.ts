@@ -1,11 +1,14 @@
-import { Request, Response, NextFunction } from "express";
-import { ErrorResponse } from "./response/error_response";
+import type { Request, Response, NextFunction } from "express";
+import type { ErrorResponse } from "./response/error_response";
 import { TokenService } from "../../services/token_service";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.get("X-API-TOKEN");
+    const isSwagerFile = req.headers.referer?.includes("swagger.json");
 
-    if (token) {
+    if (isSwagerFile) {
+        return next();
+    } else if (token) {
         const valid = await TokenService.findToken(token);
 
         if (valid) {

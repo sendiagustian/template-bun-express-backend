@@ -1,26 +1,35 @@
 {
   "include": [
     "./src/**/*.ts",
-    "./src/**/*.json",
   ],
   "exclude": [
     "node_modules",
     "tests/**/*.ts",
-    "swagger/**/*.ts"
   ],
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ESNext",
+    "module": "ESNext",
     "baseUrl": "src/",
-    "module": "commonjs",
-    "moduleResolution": "Node",
+    "outDir": "./build",
+    "moduleDetection": "force",
+    "allowJs": false,
+    // Bundler mode
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    // Best practices
     "strict": true,
-    "noEmit": false,
     "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    // Some stricter flags (disabled by default)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "experimentalDecorators": true,
+    "noPropertyAccessFromIndexSignature": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
   }

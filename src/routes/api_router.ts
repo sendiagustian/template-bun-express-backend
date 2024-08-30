@@ -8,9 +8,9 @@ export const apiRouter = express.Router();
 apiRouter.use(authMiddleware);
 
 // Add your routes here
-apiRouter.post("/api/v1/user/register", async (req: Request, res: Response, next: NextFunction) => {
+apiRouter.post("/api/v1/user/register", async (req: Request, res: Response, _next: NextFunction) => {
     const reqBody: CreateUserRequest = req.body;
-    const controller = new UserController(res, next);
+    const controller = new UserController(res);
     const response = await controller.register(reqBody);
     res.status(res.statusCode).send(response);
 });

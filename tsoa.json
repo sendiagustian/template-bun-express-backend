@@ -3,11 +3,11 @@
     "noImplicitAdditionalProperties": "throw-on-extras",
     "controllerPathGlobs": ["src/routes/**/*.ts"],
     "routes": {
-        "routesDir": "swagger",
+        "routesDir": "docs",
         "specVersion": 3
     },
     "spec": {
-        "outputDirectory": "swagger",
+        "outputDirectory": "docs",
         "specVersion": 3,
         "securityDefinitions": {
             "X-API-TOKEN": {
@@ -32,11 +32,11 @@
             },
             "servers": [
                 {
-                    "url": "http://127.0.0.1:8000",
+                    "url": "http://127.0.0.1:5050",
                     "description": "Local environment"
                 },
                 {
-                    "url": "https://example.com",
+                    "url": "http://127.0.0.1:8000",
                     "description": "Prod environment"
                 }
             ]

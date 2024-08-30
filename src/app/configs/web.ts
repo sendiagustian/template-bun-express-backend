@@ -1,10 +1,11 @@
 import cors from "cors";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
-import express, { Application } from "express";
+import express, { type Application } from "express";
 import { publicRouter } from "../../routes/public_router";
 import { apiRouter } from "../../routes/api_router";
 import { swaggerMiddleware } from "../middlewares/swagger_middleware";
+import { errorMiddleware } from "../middlewares/error_middleware";
 
 export const web: Application = express();
 
@@ -12,7 +13,7 @@ export const web: Application = express();
 web.use(express.json()); // Parse JSON body
 web.use(morgan("tiny")); // Log all requests
 web.use(cors({ origin: "*" })); // Allow all origins
-web.use(express.static("swagger")); // Serve the docs folder for swagger
+web.use(express.static("docs")); // Serve the docs folder for swagger
 
 // Middleware to disable caching
 web.use((_, res, next) => {
@@ -30,3 +31,5 @@ web.use(publicRouter);
 
 // Add api router to the web
 web.use(apiRouter);
+
+web.use(errorMiddleware);

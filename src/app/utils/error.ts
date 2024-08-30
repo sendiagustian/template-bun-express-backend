@@ -1,5 +1,4 @@
 import { ZodError } from "zod";
-import type { Request, Response, NextFunction } from "express";
 import type { ErrorResponse } from "../middlewares/response/error_response";
 
 export class ThrowError extends Error {
@@ -12,39 +11,28 @@ export class ThrowError extends Error {
     }
 }
 
-export const errorHandle = (error: any, res: Response) => {
+export const erroHandle = (error: any) => {
     if (error instanceof ZodError) {
-        const message: string = error.errors
-            .map((issue) => `${issue.message} in field ${issue.path.join(".")}`)
-            .join(" & ");
+        // Handle ZodError here
+        const message = error.issues.map((issue) => `${issue.message} in field ${issue.path.join(".")}`).join(" & ");
 
-        const response: ErrorResponse = {
+        const errorResponse: ErrorResponse = {
             status: 400,
-            errors: message,
-            details: error.errors.map((issue) => ({
-                field: issue.path.join("."),
-                message: issue.message
-            }))
+            errors: message
         };
 
-        res.status(400).json(response);
+        return errorResponse;
     } else if (error instanceof ThrowError) {
-        const message: string = error.message;
+        const message = error.message;
 
-        const response: ErrorResponse = {
+        const errorResponse: ErrorResponse = {
             status: error.status,
             errors: message
         };
 
-        res.status(error.status).json(response);
+        return errorResponse;
     } else {
-        const message: string = error.message;
-
-        const response: ErrorResponse = {
-            status: 500,
-            errors: message
-        };
-
-        res.status(500).json(response);
+        // Re-throw other errors for the error middleware
+        throw error;
     }
 };

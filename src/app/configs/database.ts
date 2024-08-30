@@ -1,4 +1,4 @@
-import { Connection, createPool, ResultSetHeader } from "mysql2/promise";
+import { type Connection, createPool, type ResultSetHeader } from "mysql2/promise";
 
 async function connectToDatabase(): Promise<Connection> {
     try {
