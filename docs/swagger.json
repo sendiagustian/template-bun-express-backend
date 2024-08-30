@@ -40,7 +40,7 @@
 				],
 				"type": "object"
 			},
-			"CreateUserRequest": {
+			"AuthRegisterRequest": {
 				"properties": {
 					"phone": {
 						"type": "string"
@@ -60,6 +60,86 @@
 					"password",
 					"email",
 					"name"
+				],
+				"type": "object"
+			},
+			"UserModel": {
+				"properties": {
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"phone": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"uid": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"updatedAt",
+					"createdAt",
+					"phone",
+					"email",
+					"uid"
+				],
+				"type": "object"
+			},
+			"AuthView": {
+				"properties": {
+					"user": {
+						"$ref": "#/components/schemas/UserModel"
+					},
+					"expiredAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"token": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"user",
+					"expiredAt",
+					"token"
+				],
+				"type": "object"
+			},
+			"DataResponse_AuthView_": {
+				"properties": {
+					"data": {
+						"$ref": "#/components/schemas/AuthView"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"data",
+					"status"
+				],
+				"type": "object"
+			},
+			"AuthLoginRequest": {
+				"properties": {
+					"password": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"password",
+					"email"
 				],
 				"type": "object"
 			}
@@ -108,7 +188,7 @@
 				"parameters": []
 			}
 		},
-		"/api/v1/user/register": {
+		"/api/v1/auth/register": {
 			"post": {
 				"operationId": "registerUser",
 				"responses": {
@@ -131,20 +211,55 @@
 					}
 				},
 				"tags": [
-					"User"
+					"Authentication"
 				],
-				"security": [
-					{
-						"X-API-TOKEN": []
-					}
-				],
+				"security": [],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CreateUserRequest"
+								"$ref": "#/components/schemas/AuthRegisterRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/auth/login": {
+			"post": {
+				"operationId": "loginUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{
+											"$ref": "#/components/schemas/DataResponse_AuthView_"
+										},
+										{
+											"$ref": "#/components/schemas/ErrorResponse"
+										}
+									]
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Authentication"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthLoginRequest"
 							}
 						}
 					}

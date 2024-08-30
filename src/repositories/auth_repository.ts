@@ -1,9 +1,9 @@
-import { exeQuery } from "../app/configs/database";
-import type { CreateUserRequest } from "../data/requests/user_request";
+import { exeQuery, getQuery } from "../app/configs/database";
 import { v4 as uuid } from "uuid";
+import type { AuthRegisterRequest } from "../data/requests/auth_request";
 
 export class UserRepository {
-    static async create(reqData: CreateUserRequest): Promise<string | null> {
+    static async create(reqData: AuthRegisterRequest): Promise<string | null> {
         const uid: string = uuid().replace(/-/g, "");
 
         const sql = `INSERT INTO tbUsers (uid, name, email, password, phone) VALUES (?, ?, ?, ?, ?) 
@@ -30,5 +30,15 @@ export class UserRepository {
         } else {
             return null;
         }
+    }
+
+    static async findByEmail(email: string): Promise<string | null> {
+        const sql = `SELECT * FROM tbUsers WHERE email = ?`;
+        const data = await getQuery({
+            query: sql,
+            type: "object",
+            params: [email]
+        });
+        return data;
     }
 }

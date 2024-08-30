@@ -1,4 +1,6 @@
 export type TokenRequest = {
     token: string;
-    expiredAt: string;
+    userUid: string;
+    status: "login" | "logout";
+    expiredAt: Date;
 };

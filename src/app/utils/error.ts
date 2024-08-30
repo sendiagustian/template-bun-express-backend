@@ -11,7 +11,7 @@ export class ThrowError extends Error {
     }
 }
 
-export const erroHandle = (error: any) => {
+export const erroHandle = (error: any): ErrorResponse => {
     if (error instanceof ZodError) {
         // Handle ZodError here
         const message = error.issues.map((issue) => `${issue.message} in field ${issue.path.join(".")}`).join(" & ");
