@@ -3,7 +3,7 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import express, { type Application } from "express";
 import { publicRouter } from "../../routes/public_router";
-import { apiRouter } from "../../routes/api_router";
+import { apiRouter } from "../../routes/token_router";
 import { swaggerMiddleware } from "../middlewares/swagger_middleware";
 import { errorMiddleware } from "../middlewares/error_middleware";
 
@@ -24,7 +24,7 @@ web.use((_, res, next) => {
 });
 
 // Setting up Swagger UI
-publicRouter.use("/docs", swaggerUi.serve, swaggerMiddleware);
+web.use("/docs", swaggerUi.serve, swaggerMiddleware);
 
 // Add public router to the web
 web.use(publicRouter);

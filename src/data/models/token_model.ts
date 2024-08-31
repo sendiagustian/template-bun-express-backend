@@ -1,4 +1,4 @@
-export type TokenModel = {
+export type AuthTokenModel = {
     token: string;
     userUid: string;
     expiredAt: Date | null;
@@ -7,7 +7,7 @@ export type TokenModel = {
     updatedAt: Date;
 };
 
-export const sqlToTokenModel = (sql: any): TokenModel => {
+export const sqlToAuthTokenModel = (sql: any): AuthTokenModel => {
     return {
         token: sql.token,
         userUid: sql.userUid,
@@ -18,6 +18,6 @@ export const sqlToTokenModel = (sql: any): TokenModel => {
     };
 };
 
-export const isExpiredToken = (expiredAt: Date): boolean => {
+export const isExpiredAuthToken = (expiredAt: Date): boolean => {
     return new Date() > expiredAt;
 };

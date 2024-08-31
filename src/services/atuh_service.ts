@@ -1,14 +1,12 @@
 import jwt from "jsonwebtoken";
-import moment from "moment-timezone";
 import { ThrowError } from "../app/utils/error";
 import { Validation } from "../app/utils/validation";
 import type { AuthView } from "../data/models/views/auth_view";
 import type { AuthLoginRequest, AuthRegisterRequest } from "../data/requests/auth_request";
 import { AuthValidation } from "../data/validations/auth_validation";
-import { UserRepository } from "../repositories/auth_repository";
+import { AuthRepository } from "../repositories/auth_repository";
 import { sqlToUserModel, type UserModel } from "../data/models/user_model";
-import { TokenRepository } from "../repositories/token_repository";
-import { sqlToTokenModel } from "../data/models/token_model";
+import { isExpiredAuthToken, sqlToAuthTokenModel, type AuthTokenModel } from "../data/models/token_model";
 
 const createToken = (userModelData: UserModel): AuthView => {
     const secret: string = process.env.JWT_SECRET!;
@@ -17,7 +15,7 @@ const createToken = (userModelData: UserModel): AuthView => {
     const token = jwt.sign(userModelData, secret, { expiresIn: "1d" });
 
     // Save token to database
-    TokenRepository.create({
+    AuthRepository.createToken({
         token: token,
         userUid: userModelData.uid,
         status: "login",
@@ -32,6 +30,16 @@ const createToken = (userModelData: UserModel): AuthView => {
 };
 
 export class AuthService {
+    static async findToken(token: string): Promise<AuthTokenModel | null> {
+        const sqlData = await AuthRepository.findToken(token);
+        if (sqlData) {
+            const dataModel = sqlToAuthTokenModel(sqlData);
+            return dataModel;
+        } else {
+            return null;
+        }
+    }
+
     static async register(reqData: AuthRegisterRequest): Promise<string> {
         const requestValid = Validation.validate(AuthValidation.REGISTER, reqData);
         requestValid.password = await Bun.password.hash(reqData.password, {
@@ -39,7 +47,7 @@ export class AuthService {
             cost: 10
         });
 
-        const response = await UserRepository.create(requestValid);
+        const response = await AuthRepository.register(requestValid);
 
         if (response !== null) {
             return response;
@@ -50,10 +58,10 @@ export class AuthService {
 
     static async login(reqData: AuthLoginRequest): Promise<AuthView> {
         const requestValid: AuthLoginRequest = Validation.validate(AuthValidation.LOGIN, reqData);
-        const sqlUserData: any = await UserRepository.findByEmail(requestValid.email);
+        const sqlUserData: any = await AuthRepository.findUserByEmail(requestValid.email);
 
         if (sqlUserData) {
-            const userModelData = sqlToUserModel(sqlUserData);
+            const userModelData: UserModel = sqlToUserModel(sqlUserData);
 
             const passwordValid: boolean = await Bun.password.verify(
                 requestValid.password,
@@ -62,19 +70,19 @@ export class AuthService {
             );
 
             if (passwordValid) {
-                const sqlOldTokenData = await TokenRepository.findByUserUid(userModelData.uid);
+                const sqlOldAuthTokenData: any = await AuthRepository.findTokenByUserUid(userModelData.uid);
 
-                if (sqlOldTokenData) {
-                    const oldTokenIsActive = sqlOldTokenData.expiredAt
-                        ? moment(sqlOldTokenData.expiredAt).isAfter(moment())
+                if (sqlOldAuthTokenData) {
+                    const oldTokenIsActive: boolean = sqlOldAuthTokenData.expiredAt
+                        ? !isExpiredAuthToken(sqlOldAuthTokenData.expiredAt)
                         : false;
 
                     if (oldTokenIsActive) {
-                        const oldTokenModelData = sqlToTokenModel(sqlOldTokenData);
+                        const oldAuthTokenModelData = sqlToAuthTokenModel(sqlOldAuthTokenData);
 
                         return {
-                            token: oldTokenModelData.token,
-                            expiredAt: oldTokenModelData.expiredAt!,
+                            token: oldAuthTokenModelData.token,
+                            expiredAt: oldAuthTokenModelData.expiredAt!,
                             user: userModelData
                         };
                     } else {

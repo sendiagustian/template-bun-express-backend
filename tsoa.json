@@ -18,9 +18,9 @@
         },
         "spec": {
             "info": {
-                "title": "Docs API Tong Nyampah",
+                "title": "Docs API Template",
                 "version": "v1.0.0",
-                "termsOfService": "https://sendistudio.id/tos",
+                "termsOfService": "https://example.com/tos",
                 "contact": {
                     "name": "Sendi Aagustian",
                     "email": "sendiagustian.pk@gmail.com"

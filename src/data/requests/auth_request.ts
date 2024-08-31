@@ -9,3 +9,10 @@ export type AuthRegisterRequest = {
     password: string;
     phone: string;
 };
+
+export type AuthTokenRequest = {
+    token: string;
+    userUid: string;
+    status: "login" | "logout";
+    expiredAt: Date;
+};
