@@ -7,10 +7,13 @@
     "tests/**/*.ts",
   ],
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES2021",
+    "module": "ES2022",
+    "types": [
+      "bun-types"
+    ],
     "baseUrl": "src/",
-    "outDir": "./build",
+    "outDir": "./dist",
     "moduleDetection": "force",
     "allowJs": false,
     // Bundler mode
