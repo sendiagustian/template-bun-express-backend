@@ -1,20 +1,15 @@
 import { type Connection, createPool, type ResultSetHeader } from "mysql2/promise";
 
 async function connectToDatabase(): Promise<Connection> {
-    try {
-        const connection = createPool({
-            connectionLimit: 5,
-            host: process.env.DB_HOST!,
-            port: parseInt(process.env.DB_PORT!),
-            user: process.env.DB_USER!,
-            password: process.env.DB_PASSWORD!,
-            database: process.env.DB_NAME!
-        });
-        return connection;
-    } catch (error) {
-        console.error("Gagal terhubung ke database:", error);
-        throw error;
-    }
+    const connection = createPool({
+        connectionLimit: 5,
+        host: process.env.DB_HOST!,
+        port: parseInt(process.env.DB_PORT!),
+        user: process.env.DB_USER!,
+        password: process.env.DB_PASSWORD!,
+        database: process.env.DB_NAME!
+    });
+    return connection;
 }
 
 // FOR SELECT QUERY DATABASE
@@ -32,8 +27,8 @@ export async function getQuery(arg: { query: string; type: "list" | "object"; pa
             return response[0];
         }
     } catch (error) {
-        console.error("Gagal menjalankan query:", error);
-        throw new Error(`${error}`.replace("db_tong_nyampah", "database"));
+        console.error("Gagal menjalankan get query:", error);
+        return new Error(`${error}`.replace(process.env.DB_NAME || "database", "database"));
     } finally {
         if (connection) {
             await connection.end();
@@ -42,7 +37,7 @@ export async function getQuery(arg: { query: string; type: "list" | "object"; pa
 }
 
 // FOR INSERT, UPDATE, DELETE QUERY DATABASE
-export async function exeQuery(arg: { query: string; params?: any[] }): Promise<ResultSetHeader> {
+export async function exeQuery(arg: { query: string; params?: any[] }): Promise<ResultSetHeader | Error> {
     let connection;
     const valueParams = arg.params?.filter((item) => item !== undefined);
 
@@ -51,8 +46,8 @@ export async function exeQuery(arg: { query: string; params?: any[] }): Promise<
         const [rows, _field] = await connection.query(arg.query, valueParams);
         return rows as ResultSetHeader;
     } catch (error) {
-        console.error("Gagal menjalankan query:", error);
-        throw new Error(`${error}`.replace("api_template", "database"));
+        console.error("Gagal menjalankan exequery:", error);
+        return new Error(`${error}`.replace(process.env.DB_NAME || "database", "database"));
     } finally {
         if (connection) {
             await connection.end();

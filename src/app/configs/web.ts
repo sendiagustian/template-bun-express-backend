@@ -3,9 +3,10 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import express, { type Application } from "express";
 import { publicRouter } from "../../routes/public_router";
-import { apiRouter } from "../../routes/token_router";
+import { apiRouter } from "../../routes/api_router";
 import { swaggerMiddleware } from "../middlewares/swagger_middleware";
 import { errorMiddleware } from "../middlewares/error_middleware";
+import { fileRouter } from "../../routes/file_router";
 
 export const web: Application = express();
 
@@ -13,7 +14,11 @@ export const web: Application = express();
 web.use(express.json()); // Parse JSON body
 web.use(morgan("tiny")); // Log all requests
 web.use(cors({ origin: "*" })); // Allow all origins
+web.use(express.urlencoded({ extended: true })); // Parse URL-encoded body
+
+// Serve static resources
 web.use(express.static("docs")); // Serve the docs folder for swagger
+web.use("/files-storage", express.static("files-storage")); // Serve the files-storage folder for static files
 
 // Middleware to disable caching
 web.use((_, res, next) => {
@@ -24,12 +29,15 @@ web.use((_, res, next) => {
 });
 
 // Setting up Swagger UI
-web.use("/docs", swaggerUi.serve, swaggerMiddleware);
+web.use("/api/docs", swaggerUi.serve, swaggerMiddleware);
 
 // Add public router to the web
 web.use(publicRouter);
 
 // Add api router to the web
 web.use(apiRouter);
+
+// Add file router to the web
+web.use(fileRouter);
 
 web.use(errorMiddleware);

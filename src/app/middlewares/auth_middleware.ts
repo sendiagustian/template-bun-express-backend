@@ -14,7 +14,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
                 validToken?.expiredAt !== null ? !isExpiredAuthToken(validToken?.expiredAt) : true;
 
             if (tokenActive) {
-                return next();
+                next();
+                return;
             } else {
                 const message: string = "Token expired";
                 const response: ErrorResponse = {
@@ -22,7 +23,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
                     errors: message
                 };
 
-                return res.status(401).json(response).end();
+                res.status(401).json(response).end();
             }
         } else {
             const message: string = "Incorrect authentication";
@@ -31,7 +32,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
                 errors: message
             };
 
-            return res.status(401).json(response).end();
+            res.status(401).json(response).end();
         }
     } else {
         const message: string = "Unauthorized";
@@ -40,6 +41,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
             errors: message
         };
 
-        return res.status(401).json(response).end();
+        res.status(401).json(response).end();
     }
 };

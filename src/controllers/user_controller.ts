@@ -3,7 +3,7 @@ import type { DataResponse } from "../app/middlewares/response/data_response";
 import type { UserModel } from "../data/models/user_model";
 import type { ErrorResponse } from "../app/middlewares/response/error_response";
 import { UserService } from "../services/user_service";
-import type { Response } from "express";
+import type { NextFunction, Response } from "express";
 import { erroHandle } from "../app/utils/error";
 import type { UserCreateRequest, UserUpdateRequest } from "../data/requests/user_request";
 
@@ -11,9 +11,11 @@ import type { UserCreateRequest, UserUpdateRequest } from "../data/requests/user
 @Route("/api/v1/user")
 export class UserController {
     private res: Response;
+    private next: NextFunction;
 
-    constructor(res: Response) {
+    constructor(res: Response, next: NextFunction) {
         this.res = res;
+        this.next = next;
     }
 
     @OperationId("createUser")
@@ -29,7 +31,7 @@ export class UserController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 
@@ -46,7 +48,7 @@ export class UserController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 
@@ -63,7 +65,7 @@ export class UserController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 
@@ -83,7 +85,7 @@ export class UserController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 
@@ -100,7 +102,7 @@ export class UserController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 }

@@ -1,4 +1,4 @@
-import type { Response } from "express";
+import type { NextFunction, Response } from "express";
 import { Body, OperationId, Post, Route, Tags } from "tsoa";
 import { type DataResponse } from "../app/middlewares/response/data_response";
 import { AuthService } from "../services/atuh_service";
@@ -11,9 +11,11 @@ import type { AuthView } from "../data/models/views/auth_view";
 @Route("/api/v1/auth")
 export class AuthController {
     private res: Response;
+    private next: NextFunction;
 
-    constructor(res: Response) {
+    constructor(res: Response, next: NextFunction) {
         this.res = res;
+        this.next = next;
     }
 
     @OperationId("registerUser")
@@ -28,7 +30,7 @@ export class AuthController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 
@@ -44,7 +46,7 @@ export class AuthController {
 
             return response;
         } catch (error) {
-            return erroHandle(error);
+            return erroHandle(error, this.next);
         }
     }
 }
